@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌾 Harvest Haven</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="day-theme">
+
+<!-- ==================== PAINT SPLASH BACKGROUND ==================== -->
+<svg id="splash-canvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Day filters: soft glow on blobs -->
+    <filter id="goo-day" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -10" result="goo"/>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+    <filter id="blur-soft">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <!-- Night filter -->
+    <filter id="goo-night" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -8" result="goo"/>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+  </defs>
+
+  <!-- ===== DAY BLOBS (shown in day-theme) ===== -->
+  <g id="day-blobs" filter="url(#blur-soft)" opacity="0.72">
+    <!-- Top-left: warm coral splash -->
+    <ellipse class="blob blob-1" cx="120"  cy="130" rx="210" ry="170" fill="#FF8C69" opacity="0.55"/>
+    <!-- Top-right: golden yellow splash -->
+    <ellipse class="blob blob-2" cx="1320" cy="90"  rx="230" ry="190" fill="#FFD166" opacity="0.60"/>
+    <!-- Center-left: lime green -->
+    <ellipse class="blob blob-3" cx="200"  cy="500" rx="260" ry="200" fill="#80ED99" opacity="0.50"/>
+    <!-- Center: sky blue -->
+    <ellipse class="blob blob-4" cx="720"  cy="200" rx="200" ry="150" fill="#72EFDD" opacity="0.45"/>
+    <!-- Center-right: lavender -->
+    <ellipse class="blob blob-5" cx="1100" cy="450" rx="240" ry="180" fill="#C77DFF" opacity="0.40"/>
+    <!-- Bottom-left: hot pink -->
+    <ellipse class="blob blob-6" cx="300"  cy="820" rx="280" ry="160" fill="#FF6B9D" opacity="0.42"/>
+    <!-- Bottom-center: orange -->
+    <ellipse class="blob blob-7" cx="780"  cy="750" rx="220" ry="170" fill="#FF9F1C" opacity="0.38"/>
+    <!-- Bottom-right: teal -->
+    <ellipse class="blob blob-8" cx="1350" cy="800" rx="260" ry="180" fill="#06D6A0" opacity="0.45"/>
+    <!-- Small accent: deep purple -->
+    <ellipse class="blob blob-9" cx="600"  cy="600" rx="140" ry="110" fill="#9B5DE5" opacity="0.32"/>
+    <!-- Small accent: baby blue -->
+    <ellipse class="blob blob-10" cx="950" cy="350" rx="160" ry="120" fill="#48CAE4" opacity="0.38"/>
+  </g>
+
+  <!-- Sharper pop splashes (no blur) — teardrop shapes via path -->
+  <g id="day-splashes" opacity="0.18">
+    <path d="M80,60 Q140,10 200,80 Q260,140 180,180 Q100,210 60,150 Z" fill="#FF6B6B"/>
+    <path d="M1250,30 Q1320,-20 1390,50 Q1440,110 1370,150 Q1290,180 1240,120 Z" fill="#FFE066"/>
+    <path d="M50,700 Q120,640 190,720 Q240,790 160,830 Q80,860 40,790 Z" fill="#4CC9F0"/>
+    <path d="M1300,650 Q1380,600 1430,680 Q1470,750 1400,790 Q1320,820 1280,750 Z" fill="#F72585"/>
+    <path d="M650,50 Q720,0 780,60 Q830,120 760,160 Q680,190 640,130 Z" fill="#7209B7"/>
+    <path d="M700,830 Q780,770 850,840 Q900,900 820,930 Q740,950 700,880 Z" fill="#4CC9F0"/>
+  </g>
+
+  <!-- ===== NIGHT BLOBS (hidden in day, shown at night) ===== -->
+  <g id="night-blobs" filter="url(#blur-soft)" opacity="0" style="transition:opacity 2s">
+    <!-- Deep purple main blob -->
+    <ellipse class="blob blob-1" cx="200"  cy="150" rx="280" ry="220" fill="#240046" opacity="0.80"/>
+    <!-- Blue-violet -->
+    <ellipse class="blob blob-2" cx="1300" cy="100" rx="260" ry="200" fill="#3A0CA3" opacity="0.75"/>
+    <!-- Midnight teal -->
+    <ellipse class="blob blob-3" cx="150"  cy="600" rx="300" ry="220" fill="#023E8A" opacity="0.65"/>
+    <!-- Dark magenta -->
+    <ellipse class="blob blob-4" cx="800"  cy="250" rx="220" ry="160" fill="#6A0572" opacity="0.60"/>
+    <!-- Navy -->
+    <ellipse class="blob blob-5" cx="1150" cy="500" rx="260" ry="190" fill="#03045E" opacity="0.70"/>
+    <!-- Indigo -->
+    <ellipse class="blob blob-6" cx="400"  cy="800" rx="250" ry="170" fill="#560BAD" opacity="0.55"/>
+    <!-- Deep teal -->
+    <ellipse class="blob blob-7" cx="800"  cy="780" rx="240" ry="180" fill="#0077B6" opacity="0.50"/>
+    <!-- Dark plum -->
+    <ellipse class="blob blob-8" cx="1350" cy="820" rx="280" ry="190" fill="#370617" opacity="0.60"/>
+    <!-- Glowing accent: electric blue -->
+    <ellipse class="blob blob-9"  cx="650" cy="500" rx="130" ry="100" fill="#4361EE" opacity="0.55"/>
+    <!-- Glowing accent: violet -->
+    <ellipse class="blob blob-10" cx="1000" cy="350" rx="150" ry="115" fill="#7B2D8B" opacity="0.50"/>
+  </g>
+
+  <!-- Night glow accents -->
+  <g id="night-accents" opacity="0" style="transition:opacity 2s">
+    <circle cx="300"  cy="100" r="80" fill="#4CC9F0" opacity="0.12"/>
+    <circle cx="1100" cy="80"  r="100" fill="#9B5DE5" opacity="0.14"/>
+    <circle cx="720"  cy="450" r="60"  fill="#F72585" opacity="0.10"/>
+    <circle cx="200"  cy="750" r="90"  fill="#4361EE" opacity="0.12"/>
+    <circle cx="1300" cy="700" r="70"  fill="#06D6A0" opacity="0.10"/>
+  </g>
+</svg>
+
+<!-- ==================== HEADER ==================== -->
+<header>
+  <div class="logo">🌾 Harvest<span>Haven</span></div>
+  <div class="resource-bar">
+    <div class="res-chip">💰 <span id="money-display">150</span>g</div>
+    <div class="res-chip">🧺 <span id="harvest-display">0</span></div>
+    <div class="res-chip">⭐ <span id="score-display">0</span></div>
+    <div class="res-chip" id="time-chip">☀️ Day</div>
+  </div>
+</header>
+
+<!-- ==================== NAV ==================== -->
+<nav>
+  <button class="tab-btn active" onclick="showPage('home')">🏠 Home</button>
+  <button class="tab-btn" onclick="showPage('farm')">🚜 Farm</button>
+  <button class="tab-btn" onclick="showPage('market')">🛒 Market</button>
+  <button class="tab-btn" onclick="showPage('dashboard')">📊 Dashboard</button>
+  <button class="tab-btn" onclick="showPage('leaderboard')">🏆 Scores</button>
+  <button class="tab-btn" onclick="showPage('manual')">📖 Manual</button>
+</nav>
+
+<main>
+
+<!-- ==================== HOME ==================== -->
+<div id="page-home" class="page active">
+
+  <!------ Hero banner ------>
+  <div class="home-hero">
+    <div class="hero-badges">
+      <span class="hero-badge">🌸 Spring Season</span>
+      <span class="hero-badge">⭐ Beginner Friendly</span>
+    </div>
+    <div class="hero-logo-big">🌾</div>
+    <h1>Harvest Haven</h1>
+    <p>Plant · Water · Grow · Sell · Expand<br>Your ultimate browser farming adventure!</p>
+    <button class="start-btn" onclick="showPage('farm')">🚜 Start Farming Now!</button>
+    <div class="hero-sub">No downloads · No login · Free to play</div>
+  </div>
+
+  <!------ Feature highlights ------>
+  <div class="features-row">
+    <div class="feature-pill">🌦️ Live Weather</div>
+    <div class="feature-pill">🔄 Multi-Harvest</div>
+    <div class="feature-pill">📈 Dynamic Market</div>
+    <div class="feature-pill">🎯 Daily Challenges</div>
+    <div class="feature-pill">🌙 Day &amp; Night</div>
+    <div class="feature-pill">🏆 Leaderboard</div>
+  </div>
+
+  <!------ How to play cards ------>
+  <div class="section-title">📖 How to Play</div>
+  <div class="how-grid">
+    <div class="how-card"><span class="how-step">🌱</span><span class="how-title">1. Plant</span><span class="how-desc">Pick a crop, click an empty plot to sow seeds</span></div>
+    <div class="how-card"><span class="how-step">💧</span><span class="how-title">2. Water</span><span class="how-desc">Keep water balanced — too dry or too wet hurts quality</span></div>
+    <div class="how-card"><span class="how-step">🌿</span><span class="how-title">3. Fertilize</span><span class="how-desc">Boost growth speed with fertilizer (once per crop!)</span></div>
+    <div class="how-card"><span class="how-step">⏭</span><span class="how-title">4. Next Day</span><span class="how-desc">Advance time — weather changes, crops grow!</span></div>
+    <div class="how-card"><span class="how-step">🧺</span><span class="how-title">5. Harvest</span><span class="how-desc">Collect before crops rot (3-day window!)</span></div>
+    <div class="how-card"><span class="how-step">💰</span><span class="how-title">6. Sell Smart</span><span class="how-desc">Time your sales around market events for max profit</span></div>
+  </div>
+
+  <!------ Quick stats ----->
+  <div class="section-title" style="margin-top:4px;">⚡ Your Farm Stats</div>
+  <div class="dashboard-grid">
+    <div class="stat-card money"><span class="stat-icon">💰</span><span class="stat-value" id="home-money">150</span><span class="stat-label">Gold</span></div>
+    <div class="stat-card harvest"><span class="stat-icon">🧺</span><span class="stat-value" id="home-harvest">0</span><span class="stat-label">In Basket</span></div>
+    <div class="stat-card score"><span class="stat-icon">⭐</span><span class="stat-value" id="home-score">0</span><span class="stat-label">Score</span></div>
+    <div class="stat-card day"><span class="stat-icon">📅</span><span class="stat-value" id="home-day">1</span><span class="stat-label">Day</span></div>
+  </div>
+
+  <!------ Crop showcase ------>
+  <div class="section-title" style="margin-top:4px;">🌿 Available Crops</div>
+  <div class="crop-showcase">
+    <div class="showcase-item"><span>🌾</span><span class="sc-name">Wheat</span><span class="sc-sub">Fast &amp; cheap</span></div>
+    <div class="showcase-item"><span>🌽</span><span class="sc-name">Corn</span><span class="sc-sub">Summer star</span></div>
+    <div class="showcase-item"><span>🥕</span><span class="sc-name">Carrot</span><span class="sc-sub">Autumn staple</span></div>
+    <div class="showcase-item"><span>🍅</span><span class="sc-name">Tomato</span><span class="sc-sub">High value</span></div>
+    <div class="showcase-item"><span>🥔</span><span class="sc-name">Potato</span><span class="sc-sub">Reliable</span></div>
+    <div class="showcase-item"><span>🌶️</span><span class="sc-name">Pepper</span><span class="sc-sub">Premium</span></div>
+    <div class="showcase-item highlight"><span>🫐</span><span class="sc-name">Blueberry</span><span class="sc-sub">×3 Harvest!</span></div>
+    <div class="showcase-item highlight"><span>🍓</span><span class="sc-name">Strawberry</span><span class="sc-sub">×2 Harvest!</span></div>
+  </div>
+
+</div>
+
+<!-- ==================== FARM ==================== -->
+<div id="page-farm" class="page">
+  <div class="top-banner">
+    <div class="season-info">
+      <span style="font-size:1.3rem" id="season-icon">🌸</span>
+      <div>
+        <h2 id="season-name">Spring</h2>
+        <span class="day-counter">Day <span id="day-num">1</span></span>
+      </div>
+    </div>
+    <div class="weather-chip" id="weather-display">☀️ Sunny</div>
+    <button class="next-day-btn" onclick="nextDay()">⏭ Next Day</button>
+  </div>
+
+  <div class="event-banner" id="event-banner">🎉 Event!</div>
+
+  <div class="crop-panel farm-section">
+    <div class="section-title">🌿 Choose a Crop to Plant</div>
+    <div class="crops-grid" id="crops-grid"></div>
+  </div>
+
+  <div class="controls-row">
+    <button class="ctrl-btn btn-water"   id="tool-btn-water"  onclick="activateTool('water')">💧 Water (3g)</button>
+    <button class="ctrl-btn btn-fert"    id="tool-btn-fert"   onclick="activateTool('fert')">🌿 Fertilize (5g)</button>
+    <button class="ctrl-btn btn-harvest" onclick="harvestAll()">🧺 Harvest All</button>
+    <button class="ctrl-btn btn-clear"   id="tool-btn-clear"  onclick="activateTool('clear')">🗑️ Clear</button>
+  </div>
+  <div id="tool-indicator">🌱 Plant Mode — Select a crop above</div>
+
+  <div class="farm-section">
+    <div class="section-title">🌾 Your Farm
+      <span style="font-size:0.78rem;color:#888;font-weight:700;">
+        (💧Blue border=watered · 🔴Red=dry · 🟣Purple=too wet)
+      </span>
+    </div>
+    <div class="farm-wrapper" id="farm-grid"></div>
+    <button class="expand-btn" onclick="expandFarm()">🏗️ Expand Farm (+5 plots · <span id="expand-cost">80</span>g)</button>
+  </div>
+
+  <!----- Daily Challenges ----->
+  <div class="farm-section">
+    <div class="section-title">🎯 Daily Challenges</div>
+    <div class="challenges-grid" id="challenges-grid"></div>
+  </div>
+</div>
+
+<!-- ==================== MARKET ==================== -->
+<div id="page-market" class="page">
+  <div class="market-header">
+    <div>
+      <h2>🛒 Village Market</h2>
+      <p>Prices shift daily based on season &amp; demand events!</p>
+    </div>
+    <div style="color:white;font-weight:800;font-size:1.1rem;">💰 <span id="market-money">150</span>g</div>
+  </div>
+  <div id="market-event-info" style="display:none;background:#fff3cd;border-radius:14px;padding:10px 15px;margin-bottom:12px;font-weight:800;font-size:0.82rem;color:#856404;box-shadow:var(--shadow);"></div>
+  <div class="market-grid" id="market-grid"></div>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
+<div id="page-dashboard" class="page">
+
+  <!-- Header banner -->
+  <div class="dash-header">
+    <div class="dash-header-icon">📊</div>
+    <div>
+      <h2>Dashboard</h2>
+      <p>Your complete farming stats at a glance</p>
+    </div>
+  </div>
+
+  <!----- Statistics cards ----->
+  <div class="section-title">📌 Statistics</div>
+  <div class="dash-stats-grid">
+    <div class="dash-stat-card"><span class="ds-icon">💰</span><span class="ds-value" id="dash-money">150</span><span class="ds-label">MONEY</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🎯</span><span class="ds-value" id="dash-score">0</span><span class="ds-label">SCORE</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">📦</span><span class="ds-value" id="dash-harvest">0</span><span class="ds-label">IN BASKET</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">📅</span><span class="ds-value" id="dash-day">1</span><span class="ds-label">DAYS PLAYED</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🌾</span><span class="ds-value" id="dash-wheat">0</span><span class="ds-label">WHEAT</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🌽</span><span class="ds-value" id="dash-corn">0</span><span class="ds-label">CORN</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🥕</span><span class="ds-value" id="dash-carrot">0</span><span class="ds-label">CARROT</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🍅</span><span class="ds-value" id="dash-tomato">0</span><span class="ds-label">TOMATO</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🥔</span><span class="ds-value" id="dash-potato">0</span><span class="ds-label">POTATO</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🌶️</span><span class="ds-value" id="dash-pepper">0</span><span class="ds-label">PEPPER</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🫐</span><span class="ds-value" id="dash-blueberry">0</span><span class="ds-label">BLUEBERRY</span></div>
+    <div class="dash-stat-card"><span class="ds-icon">🍓</span><span class="ds-value" id="dash-strawberry">0</span><span class="ds-label">STRAWBERRY</span></div>
+  </div>
+
+  <!-- Last 7 days profit chart -->
+  <div class="chart-container farm-section">
+    <div class="section-title">📈 Last 7 Days Profit</div>
+    <div class="chart-7-wrap" id="chart-7-wrap">
+      <!-- 7 bars filled by JS -->
+    </div>
+    <div style="font-size:0.72rem;color:#aaa;font-weight:700;margin-top:6px;">🟢 Profit day · 🔴 Loss day · Numbers show gold earned/spent</div>
+  </div>
+
+  <!-- Harvest history — detailed -->
+  <div class="farm-section">
+    <div class="section-title">🧺 Harvest History <span style="font-size:0.8rem;color:#aaa;font-weight:700;">(last 10)</span></div>
+    <div class="history-table" id="history-table">
+      <div class="history-row header">
+        <span>Crop</span>
+        <span>Quality</span>
+        <span>Sell Price</span>
+        <span>Season</span>
+        <span>Day</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== LEADERBOARD ==================== -->
+<div id="page-leaderboard" class="page">
+  <div class="leaderboard-header">
+    <h2>🏆 Hall of Fame</h2>
+    <p>Top farmers ranked by score. Submit your name to join!</p>
+  </div>
+  <div class="lb-form">
+    <input type="text" id="player-name" placeholder="Your farmer name..." maxlength="20">
+    <button onclick="submitScore()">🏅 Submit Score</button>
+  </div>
+  <div class="leaderboard-list" id="leaderboard-list"></div>
+</div>
+
+<!-- ==================== MANUAL ==================== -->
+<div id="page-manual" class="page">
+  <div class="manual-header">
+    <h2>📖 Farm Manual</h2>
+    <p>Everything you need to know to become a master farmer!</p>
+  </div>
+  <div class="manual-grid">
+    <div class="manual-card">
+      <h3>💧 Watering Guide</h3>
+      <ul>
+        <li><b>Level 0 (🔴 Dry)</b> — growth slows down, risk of drought death</li>
+        <li><b>Level 1–2 (💧 OK)</b> — healthy growth, best quality chance</li>
+        <li><b>Level 3 (🟣 Excess)</b> — rot risk each day</li>
+      </ul>
+      <br>
+      <span class="tip-chip">💡 Water once per day for ideal balance</span>
+      <span class="tip-chip">💡 Skip watering on Rainy days — it's free!</span>
+    </div>
+    <div class="manual-card">
+      <h3>🌿 Fertilizer Guide</h3>
+      <ul>
+        <li>Adds +1 day of growth progress instantly</li>
+        <li>Using once → quality bonus possible</li>
+        <li>Using twice → over-fertilized, quality may drop</li>
+        <li>Costs 5g per use</li>
+      </ul>
+      <br>
+      <span class="tip-chip">💡 Fertilize once per crop for best results</span>
+    </div>
+    <div class="manual-card">
+      <h3>🌦️ Weather Events</h3>
+      <ul>
+        <li>☀️ <b>Sunny</b> — normal growth</li>
+        <li>🌧️ <b>Rain</b> — auto-waters all crops free!</li>
+        <li>⛈️ <b>Storm</b> — 30% chance each crop gets damaged</li>
+        <li>🏜️ <b>Drought</b> — water level drops twice per day</li>
+      </ul>
+      <br>
+      <span class="tip-chip">💡 Check today's weather before manually watering</span>
+    </div>
+    <div class="manual-card">
+      <h3>⭐ Crop Quality System</h3>
+      <p>Quality affects the final sell price:</p>
+      <ul>
+        <li>⬇️ <b>Low</b> = 50% of market price</li>
+        <li>➡️ <b>Normal</b> = 100% of market price</li>
+        <li>⬆️ <b>High</b> = 150% of market price</li>
+      </ul>
+      <p>Quality improves with good watering, one fertilizer dose, and planting in the crop's best season.</p>
+    </div>
+    <div class="manual-card">
+      <h3>🌸 Seasonal Crops</h3>
+      <ul>
+        <li>🌾 Wheat — 🌸 Spring</li>
+        <li>🌽 Corn — ☀️ Summer</li>
+        <li>🥕 Carrot — 🍂 Autumn</li>
+        <li>🍅 Tomato — ☀️ Summer</li>
+        <li>🥔 Potato — 🍂 Autumn</li>
+        <li>🌶️ Pepper — ☀️ Summer</li>
+        <li>🫐 Blueberry — 🌸 Spring (×3 harvest!)</li>
+        <li>🍓 Strawberry — 🌸 Spring (×2 harvest!)</li>
+      </ul>
+      <span class="tip-chip">💡 Right season = faster growth + High quality bonus</span>
+    </div>
+    <div class="manual-card">
+      <h3>🔄 Multi-Harvest Crops</h3>
+      <p>Blueberry and Strawberry regrow after each harvest — no replanting needed! Great value per seed cost.</p>
+      <br>
+      <h3>⏰ Crop Rot Timer</h3>
+      <p>Ready crops rot in <b>3 days</b> if not harvested. Rotten crops cannot be sold — clear them with the 🗑️ tool.</p>
+      <span class="tip-chip">💡 Check your farm every day!</span>
+    </div>
+    <div class="manual-card">
+      <h3>📈 Market &amp; Events</h3>
+      <ul>
+        <li>Prices fluctuate ±20% every day based on supply</li>
+        <li>Random events double or triple a specific crop's price for 2–3 days</li>
+        <li>High quality crops earn 50% more</li>
+      </ul>
+      <span class="tip-chip">💡 Stockpile crops, sell during price spike events!</span>
+    </div>
+    <div class="manual-card">
+      <h3>🏗️ Farm Expansion</h3>
+      <p>Start with 10 plots. Unlock 5 more at a time by clicking "Expand Farm". Each expansion costs more than the last.</p>
+      <p>More plots = more crops = more profit!</p>
+      <span class="tip-chip">💡 Expand early to scale up faster</span>
+    </div>
+  </div>
+</div>
+
+</main>
+<!-- ==================== NIGHT OVERLAY ==================== -->
+<div id="night-overlay">
+  <div class="night-stars">✨ 🌙 ⭐ 🌟 ✨</div>
+  <div class="night-title">🌙 Night has fallen…</div>
+  <div class="night-timer" id="night-timer-text">Morning arrives in 3:00</div>
+  <button class="escape-night-btn" onclick="escapToMorning()">☀️ Skip to Morning</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,727 @@
+/* ========================================================
+   CSS VARIABLES
+======================================================== */
+:root {
+  --card: #FFFDF5;
+  --green-dark: #2D7A32;
+  --green-mid: #4CAF50;
+  --orange: #FF8C42;
+  --shadow: 0 4px 20px rgba(0,0,0,0.12);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --path-color: #c8a97a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ========================================================
+   DAY / NIGHT BODY
+======================================================== */
+body {
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  transition: background 2.5s, background-color 2.5s;
+  position: relative;
+}
+
+/* Make sure all page content sits above the canvas background */
+header, nav, main, #night-overlay, #toast { position: relative; z-index: 1; }
+
+/* ========================================================
+   DAY THEME — warm pastel paint-splash base
+======================================================== */
+body.day-theme {
+  background-color: #e8f5e9;
+}
+
+/* ========================================================
+   NIGHT THEME — deep cool paint-splash base
+======================================================== */
+body.night-theme {
+  background-color: #0d1b2a;
+}
+body.night-theme header { background: linear-gradient(135deg, #1a3a1e, #2d5c30); }
+body.night-theme nav    { background: rgba(18,28,18,0.97); }
+
+/* ========================================================
+   SPLASH CANVAS — fixed full-screen SVG blob layer
+======================================================== */
+#splash-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 1.5s;
+}
+
+/* Blob animations — each blob drifts and breathes */
+@keyframes blob-drift-1 {
+  0%,100% { transform: translate(0px, 0px)   scale(1);    }
+  33%     { transform: translate(40px,-30px)  scale(1.08); }
+  66%     { transform: translate(-20px, 20px) scale(0.95); }
+}
+@keyframes blob-drift-2 {
+  0%,100% { transform: translate(0px, 0px)    scale(1);    }
+  33%     { transform: translate(-50px, 20px)  scale(1.06); }
+  66%     { transform: translate(30px, -40px)  scale(0.97); }
+}
+@keyframes blob-drift-3 {
+  0%,100% { transform: translate(0px,  0px)   scale(1);    }
+  33%     { transform: translate(25px,  45px)  scale(1.1);  }
+  66%     { transform: translate(-35px,-20px)  scale(0.93); }
+}
+@keyframes blob-drift-4 {
+  0%,100% { transform: translate(0px, 0px)    scale(1);    }
+  50%     { transform: translate(-30px, 35px)  scale(1.07); }
+}
+@keyframes blob-drift-5 {
+  0%,100% { transform: translate(0px, 0px)    scale(1);    }
+  40%     { transform: translate(55px, -25px)  scale(1.05); }
+  80%     { transform: translate(-15px, 30px)  scale(0.96); }
+}
+
+.blob { animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.blob-1 { animation-name: blob-drift-1; animation-duration: 14s; }
+.blob-2 { animation-name: blob-drift-2; animation-duration: 18s; }
+.blob-3 { animation-name: blob-drift-3; animation-duration: 22s; }
+.blob-4 { animation-name: blob-drift-4; animation-duration: 16s; }
+.blob-5 { animation-name: blob-drift-5; animation-duration: 20s; }
+.blob-6 { animation-name: blob-drift-1; animation-duration: 25s; animation-delay: -5s; }
+.blob-7 { animation-name: blob-drift-2; animation-duration: 19s; animation-delay: -8s; }
+.blob-8 { animation-name: blob-drift-3; animation-duration: 28s; animation-delay: -3s; }
+.blob-9 { animation-name: blob-drift-4; animation-duration: 21s; animation-delay: -12s; }
+.blob-10{ animation-name: blob-drift-5; animation-duration: 17s; animation-delay: -6s; }
+
+#night-overlay {
+  position: fixed;
+  inset: 0;                          /* covers entire screen */
+  background: rgba(5, 10, 30, 0.72);
+  z-index: 500;
+  display: none;                     /* hidden during day */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  backdrop-filter: blur(3px);
+  animation: fadeInOverlay 1.8s ease;
+}
+#night-overlay.visible { display: flex; }
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.night-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.8rem;
+  color: #c8d8ff;
+  text-shadow: 0 0 30px rgba(150,180,255,0.8), 2px 3px 0 rgba(0,0,0,0.4);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.night-stars {
+  font-size: 1.6rem;
+  letter-spacing: 6px;
+  opacity: 0.85;
+  animation: twinkle 2.5s infinite alternate;
+}
+@keyframes twinkle {
+  from { opacity: 0.5; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.08); }
+}
+
+.night-timer {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: rgba(180,200,255,0.75);
+  text-align: center;
+}
+
+/* The "Skip to Morning" button */
+.escape-night-btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #3a2800;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(255,200,0,0.45);
+  transition: all 0.25s;
+  letter-spacing: 0.5px;
+}
+.escape-night-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 32px rgba(255,200,0,0.6);
+}
+.escape-night-btn:active { transform: translateY(-1px); }
+
+/* ========================================================
+   HEADER
+======================================================== */
+header {
+  background: linear-gradient(135deg, #2D7A32, #4CAF50);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.logo { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: #FFD700; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+.logo span { color: #fff; }
+.resource-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.res-chip {
+  background: rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  padding: 5px 12px;
+  display: flex; align-items: center; gap: 5px;
+  font-weight: 800; font-size: 0.85rem; color: #fff;
+  transition: transform 0.2s;
+}
+.res-chip:hover { transform: scale(1.05); }
+
+/* ========================================================
+   NAV
+======================================================== */
+nav {
+  background: rgba(255,255,255,0.97);
+  display: flex; justify-content: center; gap: 6px;
+  padding: 10px 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+.tab-btn {
+  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.85rem;
+  border: none; border-radius: 50px; padding: 8px 16px;
+  cursor: pointer; transition: all 0.25s; background: #f0f0f0; color: #666;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, #4CAF50, #2D7A32);
+  color: #fff; box-shadow: 0 4px 12px rgba(76,175,80,0.4); transform: translateY(-2px);
+}
+.tab-btn:hover:not(.active) { background: #e0f2e1; color: #2D7A32; transform: translateY(-1px); }
+
+/* ========================================================
+   MAIN
+======================================================== */
+main { max-width: 980px; margin: 0 auto; padding: 18px 14px 50px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ========================================================
+   TOP BANNER (Season + Weather + Next Day)
+======================================================== */
+.top-banner {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border-radius: var(--radius); padding: 12px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; box-shadow: var(--shadow); flex-wrap: wrap; gap: 8px;
+}
+.season-info { display: flex; align-items: center; gap: 10px; }
+.season-info h2 { font-family: 'Fredoka One', cursive; font-size: 1.15rem; color: #7A4A00; }
+.day-counter  { font-weight: 800; color: #7A4A00; font-size: 0.88rem; }
+.weather-chip {
+  background: rgba(255,255,255,0.45); border-radius: 50px;
+  padding: 5px 13px; font-weight: 800; font-size: 0.82rem; color: #7A4A00;
+}
+.next-day-btn {
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  background: #7A4A00; color: #FFD700; border: none;
+  border-radius: 50px; padding: 9px 18px; cursor: pointer;
+  font-size: 0.88rem; transition: all 0.2s; box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+.next-day-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+
+/* Event alert */
+.event-banner {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  border-radius: var(--radius); padding: 10px 18px;
+  margin-bottom: 12px; color: white; font-weight: 800; font-size: 0.88rem;
+  display: none; animation: pulse-red 1.5s infinite; box-shadow: var(--shadow);
+}
+@keyframes pulse-red { 0%,100%{opacity:1}50%{opacity:0.8} }
+
+/* ========================================================
+   SECTION TITLE
+======================================================== */
+.section-title {
+  font-family: 'Fredoka One', cursive; font-size: 1.25rem; color: #2D7A32;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.farm-section { margin-bottom: 18px; }
+
+/* ========================================================
+   FARM WRAPPER WITH PATHS
+   Fix: use overflow:hidden and width:100% to stay inside
+   the green field zone on all screen sizes.
+======================================================== */
+.farm-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 14px 1fr 14px 1fr 14px 1fr 14px 1fr;
+  background: linear-gradient(160deg, #7B4A28 0%, #9C6238 50%, #8B5530 100%);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow), inset 0 2px 8px rgba(0,0,0,0.2);
+  gap: 0;
+  width: 100%;          /* never wider than its container */
+  overflow: hidden;     /* clips anything that tries to escape */
+  box-sizing: border-box;
+}
+.path-col { background: var(--path-color); border-radius: 4px; opacity: 0.55; margin: 3px 0; }
+.path-row { grid-column: 1 / -1; height: 13px; background: var(--path-color); border-radius: 4px; opacity: 0.5; margin: 4px 0; }
+
+/* ========================================================
+   PLOT TILES
+======================================================== */
+.plot {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #6B4226, #8B5E3C);
+  border: 3px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: clamp(0.9rem, 2.5vw, 1.4rem); /* responsive font */
+  transition: all 0.25s;
+  position: relative; overflow: hidden;
+  margin: 3px; user-select: none;
+  min-width: 0;   /* critical: prevents grid blowout */
+  min-height: 0;  /* critical: prevents grid blowout */
+}
+.plot:hover:not(.locked) { transform: scale(1.08); box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+
+.plot.empty   { background: linear-gradient(135deg, #6B4226, #8B5E3C); }
+.plot.planted { background: linear-gradient(135deg, #3d6b1a, #4a8a22); }
+.plot.growing { background: linear-gradient(135deg, #2d7a32, #3d9c40); }
+.plot.ready   { background: linear-gradient(135deg, #1a6b2a, #22a832); animation: pulse-green 1.2s infinite; }
+.plot.dead    { background: linear-gradient(135deg, #4a3a2a, #5c4b38); opacity: 0.75; }
+.plot.rotten  { background: linear-gradient(135deg, #4a4a00, #5e5e00); opacity: 0.75; }
+.plot.locked  { background: #999; opacity: 0.3; cursor: not-allowed; }
+
+/* Water level ring */
+.plot.water-low    { box-shadow: 0 0 0 3px #e74c3c inset; }
+.plot.water-ok     { box-shadow: 0 0 0 3px #3498DB inset; }
+.plot.water-excess { box-shadow: 0 0 0 3px #9B59B6 inset; }
+
+@keyframes pulse-green {
+  0%,100%{ box-shadow: 0 0 0 0 rgba(76,175,80,0.7); }
+  50%    { box-shadow: 0 0 0 7px rgba(76,175,80,0); }
+}
+
+/* Progress bar */
+.plot-progress {
+  position: absolute; bottom: 3px; left: 4px; right: 4px;
+  height: 4px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden;
+}
+.plot-progress-fill {
+  height: 100%; background: linear-gradient(90deg, #FFD700, #FF8C00);
+  border-radius: 10px; transition: width 0.5s;
+}
+
+/* Quality badge */
+.plot-quality {
+  position: absolute; top: 2px; right: 3px;
+  font-size: 0.58rem; font-weight: 900; border-radius: 50px; padding: 1px 4px; line-height: 1.4;
+}
+.q-low    { background: #e74c3c; color: white; }
+.q-normal { background: #f39c12; color: white; }
+.q-high   { background: #27ae60; color: white; }
+
+/* Fert dot */
+.plot-fert { position: absolute; top: 2px; left: 3px; font-size: 0.65rem; }
+
+/* ========================================================
+   EXPAND BUTTON
+======================================================== */
+.expand-btn {
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  background: linear-gradient(135deg, #8B5E3C, #A0714F);
+  color: #FFD700; border: none; border-radius: 50px;
+  padding: 10px 20px; cursor: pointer; font-size: 0.88rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2); transition: all 0.25s; margin-top: 10px;
+}
+.expand-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+
+/* ========================================================
+   CROP SELECTOR
+======================================================== */
+.crop-panel { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.crops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-top: 10px; }
+.crop-card {
+  border: 3px solid #e8e8e8; border-radius: var(--radius-sm);
+  padding: 9px 7px; text-align: center; cursor: pointer; transition: all 0.25s; background: #fafafa;
+}
+.crop-card:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.1); }
+.crop-card.selected { border-color: #4CAF50; background: #e8f5e9; box-shadow: 0 0 0 2px #4CAF50; transform: translateY(-3px); }
+.crop-card.best-season { border-color: #FFD700; background: #fffde8; }
+.crop-emoji { font-size: 1.7rem; display: block; margin-bottom: 4px; }
+.crop-name  { font-weight: 800; font-size: 0.78rem; color: #333; display: block; margin-bottom: 2px; }
+.crop-stats { font-size: 0.66rem; color: #888; font-weight: 600; line-height: 1.55; }
+.crop-cost  { display: inline-block; background: #FFF3CD; border-radius: 50px; padding: 2px 7px; font-size: 0.68rem; font-weight: 800; color: #856404; margin-top: 3px; }
+.season-badge { display: inline-block; background: #fff8e1; border: 1px solid #FFD700; border-radius: 50px; padding: 1px 6px; font-size: 0.62rem; font-weight: 800; color: #a07800; margin-top: 2px; }
+
+/* ========================================================
+   CONTROL BUTTONS
+======================================================== */
+.controls-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.ctrl-btn {
+  font-family: 'Nunito', sans-serif; font-weight: 800; border: none; border-radius: 50px;
+  padding: 9px 16px; cursor: pointer; font-size: 0.83rem; transition: all 0.25s;
+  display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.ctrl-btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+.ctrl-btn:active { transform: translateY(0); }
+.ctrl-btn.tool-active { outline: 3px solid #FFD700; }
+.btn-water   { background: linear-gradient(135deg, #3498DB, #2980B9); color: white; }
+.btn-fert    { background: linear-gradient(135deg, #8B5E3C, #a07040); color: white; }
+.btn-harvest { background: linear-gradient(135deg, #FF8C42, #e67e22); color: white; }
+.btn-clear   { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+
+#tool-indicator {
+  margin-bottom: 12px; font-weight: 800; font-size: 0.8rem; color: #555;
+  padding: 6px 15px; background: rgba(255,255,255,0.85); border-radius: 50px; display: inline-block;
+}
+
+/* ========================================================
+   STAT CARDS
+======================================================== */
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.stat-card { background: var(--card); border-radius: var(--radius); padding: 14px; text-align: center; box-shadow: var(--shadow); transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-3px); }
+.stat-icon  { font-size: 1.7rem; display: block; margin-bottom: 5px; }
+.stat-value { font-family: 'Fredoka One', cursive; font-size: 1.45rem; display: block; line-height: 1; margin-bottom: 3px; }
+.stat-label { font-size: 0.72rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card.money   .stat-value { color: #27ae60; }
+.stat-card.harvest .stat-value { color: #FF8C42; }
+.stat-card.score   .stat-value { color: #9B59B6; }
+.stat-card.day     .stat-value { color: #3498DB; }
+
+/* ========================================================
+   PROFIT CHART
+======================================================== */
+.chart-container { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 18px; }
+.chart-bars {
+  display: flex; align-items: flex-end; gap: 5px;
+  height: 100px; border-bottom: 3px solid #e0e0e0; padding-bottom: 4px; overflow-x: auto;
+}
+.chart-bar-wrap { display: flex; flex-direction: column; align-items: center; min-width: 28px; }
+.chart-bar { width: 100%; background: linear-gradient(180deg, #4CAF50, #2D7A32); border-radius: 5px 5px 0 0; transition: height 0.5s; min-height: 4px; }
+.chart-bar.negative { background: linear-gradient(180deg, #e74c3c, #c0392b); }
+.chart-label { font-size: 0.58rem; font-weight: 800; color: #aaa; margin-top: 3px; white-space: nowrap; }
+
+/* ========================================================
+   HARVEST HISTORY TABLE
+======================================================== */
+.history-table { background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 18px; }
+.history-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 9px 14px; border-bottom: 2px solid #f5f5f5;
+  font-size: 0.8rem; font-weight: 700; align-items: center;
+}
+.history-row:last-child { border-bottom: none; }
+.history-row.header { background: #f8f8f8; font-size: 0.72rem; color: #999; font-weight: 900; }
+.q-badge { display: inline-block; border-radius: 50px; padding: 2px 8px; font-size: 0.68rem; font-weight: 900; }
+
+/* ========================================================
+   MARKET
+======================================================== */
+.market-header {
+  background: linear-gradient(135deg, #FF8C42, #e67e22);
+  border-radius: var(--radius); padding: 16px 20px; margin-bottom: 14px;
+  box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.market-header h2 { font-family: 'Fredoka One', cursive; font-size: 1.35rem; color: white; }
+.market-header p  { font-size: 0.8rem; color: rgba(255,255,255,0.85); font-weight: 600; margin-top: 3px; }
+.market-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.market-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); text-align: center; transition: transform 0.25s; position: relative; }
+.market-card:hover { transform: translateY(-4px); }
+.market-emoji  { font-size: 2.1rem; display: block; margin-bottom: 7px; }
+.market-name   { font-weight: 800; font-size: 0.88rem; color: #333; margin-bottom: 4px; }
+.market-price  { font-family: 'Fredoka One', cursive; font-size: 1.15rem; color: #27ae60; margin-bottom: 3px; }
+.market-trend  { font-size: 0.72rem; font-weight: 700; margin-bottom: 3px; }
+.market-stock  { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 9px; }
+.price-up   { color: #27ae60; }
+.price-down { color: #e74c3c; }
+.sell-btns  { display: flex; gap: 5px; }
+.sell-btn {
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  background: linear-gradient(135deg, #4CAF50, #2D7A32);
+  color: white; border: none; border-radius: 50px; padding: 7px 0;
+  cursor: pointer; font-size: 0.78rem; flex: 1; transition: all 0.25s;
+  box-shadow: 0 3px 8px rgba(76,175,80,0.3);
+}
+.sell-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(76,175,80,0.4); }
+.sell-btn.sell-one { background: linear-gradient(135deg, #3498DB, #2980B9); box-shadow: 0 3px 8px rgba(52,152,219,0.3); }
+.sell-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.event-tag { position: absolute; top: -8px; right: -6px; background: #e74c3c; color: white; font-size: 0.62rem; font-weight: 900; border-radius: 50px; padding: 2px 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+
+/* ========================================================
+   LEADERBOARD
+======================================================== */
+.leaderboard-header { background: linear-gradient(135deg, #9B59B6, #8e44ad); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.leaderboard-header h2 { font-family: 'Fredoka One', cursive; font-size: 1.35rem; color: white; }
+.leaderboard-header p  { font-size: 0.8rem; color: rgba(255,255,255,0.85); font-weight: 600; margin-top: 3px; }
+.lb-form { background: var(--card); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; box-shadow: var(--shadow); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.lb-form input { font-family: 'Nunito', sans-serif; font-weight: 700; border: 3px solid #e0e0e0; border-radius: 50px; padding: 8px 15px; font-size: 0.88rem; flex: 1; min-width: 140px; outline: none; transition: border-color 0.2s; }
+.lb-form input:focus { border-color: #9B59B6; }
+.lb-form button { font-family: 'Nunito', sans-serif; font-weight: 800; background: linear-gradient(135deg, #9B59B6, #8e44ad); color: white; border: none; border-radius: 50px; padding: 9px 18px; cursor: pointer; font-size: 0.85rem; transition: all 0.25s; box-shadow: 0 3px 8px rgba(155,89,182,0.3); }
+.lb-form button:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(155,89,182,0.4); }
+.leaderboard-list { background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.lb-row { display: flex; align-items: center; padding: 11px 16px; border-bottom: 2px solid #f5f5f5; transition: background 0.2s; }
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: #fafafa; }
+.lb-rank { font-family: 'Fredoka One', cursive; font-size: 1.05rem; width: 34px; text-align: center; }
+.lb-rank.gold   { color: #FFD700; }
+.lb-rank.silver { color: #C0C0C0; }
+.lb-rank.bronze { color: #CD7F32; }
+.lb-rank.other  { color: #bbb; }
+.lb-name  { flex: 1; font-weight: 800; font-size: 0.88rem; color: #333; margin-left: 10px; }
+.lb-score { font-family: 'Fredoka One', cursive; font-size: 0.98rem; color: #9B59B6; }
+.lb-day   { font-size: 0.73rem; color: #aaa; font-weight: 600; margin-left: 10px; }
+.empty-lb { padding: 34px 20px; text-align: center; color: #bbb; font-weight: 700; font-size: 0.88rem; }
+
+/* ========================================================
+   HOME PAGE — IMPROVED LANDING
+======================================================== */
+.home-hero {
+  background: linear-gradient(145deg, #2D7A32 0%, #4CAF50 45%, #66BB6A 100%);
+  border-radius: var(--radius);
+  padding: 40px 28px 36px;
+  text-align: center;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 32px rgba(45,122,50,0.35);
+  position: relative;
+  overflow: hidden;
+}
+/* Decorative circles */
+.home-hero::before {
+  content: '';
+  position: absolute;
+  width: 220px; height: 220px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  top: -60px; right: -60px;
+}
+.home-hero::after {
+  content: '';
+  position: absolute;
+  width: 140px; height: 140px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+  bottom: -40px; left: -30px;
+}
+.hero-badges { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+.hero-badge {
+  background: rgba(255,255,255,0.22); border: 2px solid rgba(255,255,255,0.35);
+  border-radius: 50px; padding: 4px 14px; font-size: 0.78rem; font-weight: 800; color: white;
+}
+.hero-logo-big { font-size: 4rem; line-height: 1; margin-bottom: 8px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); }
+.home-hero h1 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.8rem; color: #FFD700;
+  text-shadow: 2px 4px 0 rgba(0,0,0,0.25), 0 0 40px rgba(255,215,0,0.3);
+  margin-bottom: 10px; position: relative; z-index: 1;
+}
+.home-hero p {
+  color: rgba(255,255,255,0.92); font-weight: 700; font-size: 1rem;
+  margin: 0 auto 20px; line-height: 1.7; max-width: 420px; position: relative; z-index: 1;
+}
+.start-btn {
+  font-family: 'Nunito', sans-serif; font-weight: 900;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #3a2800; border: none; border-radius: 50px;
+  padding: 14px 38px; font-size: 1.1rem; cursor: pointer;
+  transition: all 0.25s; box-shadow: 0 6px 20px rgba(255,160,0,0.4);
+  position: relative; z-index: 1;
+}
+.start-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 28px rgba(255,160,0,0.5); }
+.hero-sub { font-size: 0.75rem; color: rgba(255,255,255,0.65); font-weight: 700; margin-top: 12px; position: relative; z-index: 1; }
+
+/* Feature pills row */
+.features-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+.feature-pill {
+  background: var(--card); border-radius: 50px; padding: 7px 16px;
+  font-weight: 800; font-size: 0.8rem; color: #2D7A32;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 2px solid #e0f2e1;
+  transition: all 0.2s;
+}
+.feature-pill:hover { background: #e8f5e9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(76,175,80,0.2); }
+
+/* How-to cards */
+.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.how-card { background: var(--card); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); transition: transform 0.2s; }
+.how-card:hover { transform: translateY(-3px); }
+.how-step  { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+.how-title { font-weight: 800; font-size: 0.82rem; color: #2D7A32; display: block; margin-bottom: 3px; }
+.how-desc  { font-size: 0.72rem; color: #888; font-weight: 600; line-height: 1.5; }
+
+/* Crop showcase */
+.crop-showcase { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 4px; }
+.showcase-item {
+  background: var(--card); border-radius: var(--radius-sm);
+  padding: 14px 10px; text-align: center; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: 2px solid #f0f0f0; transition: all 0.2s;
+  font-size: 2rem;
+}
+.showcase-item:hover { transform: translateY(-3px); border-color: #4CAF50; }
+.showcase-item.highlight { border-color: #FFD700; background: #fffde8; }
+.sc-name { font-weight: 800; font-size: 0.78rem; color: #333; }
+.sc-sub  { font-size: 0.68rem; color: #888; font-weight: 700; }
+
+/* ========================================================
+   DASHBOARD — DETAILED (matches sample image style)
+======================================================== */
+.dash-header {
+  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+  border-radius: var(--radius); padding: 20px 24px;
+  margin-bottom: 18px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 16px;
+  border: 2px solid #c8e6c9;
+}
+.dash-header-icon { font-size: 2.5rem; }
+.dash-header h2 { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: #2D7A32; }
+.dash-header p  { font-size: 0.8rem; font-weight: 700; color: #666; margin-top: 3px; }
+
+/* 4-column stats grid (like sample) */
+.dash-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.dash-stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 2px solid #f0f0f0;
+  transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.dash-stat-card:hover { transform: translateY(-3px); border-color: #c8e6c9; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.ds-icon  { font-size: 2rem; }
+.ds-value { font-family: 'Fredoka One', cursive; font-size: 1.7rem; color: #2D7A32; line-height: 1; }
+.ds-label { font-size: 0.68rem; font-weight: 900; color: #999; text-transform: uppercase; letter-spacing: 0.8px; }
+
+/* Last 7 days chart — big visual bars */
+.chart-7-wrap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  align-items: flex-end;
+  height: 140px;
+  padding: 10px 10px 0;
+  border-bottom: 3px solid #e8e8e8;
+  margin-bottom: 4px;
+}
+.c7-col {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px;
+}
+.c7-bar {
+  width: 100%; min-height: 6px; border-radius: 8px 8px 0 0;
+  background: linear-gradient(180deg, #66BB6A, #2D7A32);
+  transition: height 0.6s ease;
+  position: relative;
+}
+.c7-bar.neg { background: linear-gradient(180deg, #EF5350, #C62828); }
+.c7-val {
+  font-size: 0.62rem; font-weight: 900;
+  color: #555; text-align: center; white-space: nowrap;
+}
+.c7-day {
+  font-size: 0.65rem; font-weight: 800; color: #aaa; margin-top: 4px;
+}
+
+/* ========================================================
+   HARVEST HISTORY — DETAILED 5-column table
+======================================================== */
+.history-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 0.7fr;
+  padding: 10px 14px; border-bottom: 2px solid #f5f5f5;
+  font-size: 0.8rem; font-weight: 700; align-items: center;
+}
+.history-row.header { background: #f8f8f8; font-size: 0.7rem; color: #aaa; font-weight: 900; }
+.history-row:last-child { border-bottom: none; }
+.q-badge { display: inline-block; border-radius: 50px; padding: 2px 8px; font-size: 0.68rem; font-weight: 900; }
+
+/* ========================================================
+   DAILY CHALLENGES
+======================================================== */
+.challenges-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.challenge-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow);
+  border-left: 5px solid #4CAF50;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: transform 0.2s;
+}
+.challenge-card:hover { transform: translateY(-2px); }
+.challenge-card.done { border-left-color: #FFD700; background: #fffde8; }
+.challenge-card.hard { border-left-color: #e74c3c; }
+.ch-header { display: flex; align-items: center; gap: 8px; }
+.ch-icon   { font-size: 1.5rem; }
+.ch-title  { font-weight: 900; font-size: 0.9rem; color: #333; }
+.ch-desc   { font-size: 0.78rem; color: #888; font-weight: 600; line-height: 1.5; }
+.ch-progress-wrap { background: #eee; border-radius: 50px; height: 8px; overflow: hidden; }
+.ch-progress-bar  { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #4CAF50, #FFD700); transition: width 0.5s; }
+.ch-footer { display: flex; align-items: center; justify-content: space-between; }
+.ch-reward { font-size: 0.75rem; font-weight: 800; color: #27ae60; }
+.ch-status { font-size: 0.72rem; font-weight: 800; color: #aaa; }
+.ch-status.done { color: #FFD700; }
+
+/* ========================================================
+   FARM MANUAL
+======================================================== */
+.manual-header { background: linear-gradient(135deg, #3498DB, #2980B9); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.manual-header h2 { font-family: 'Fredoka One', cursive; font-size: 1.35rem; color: white; }
+.manual-header p  { font-size: 0.8rem; color: rgba(255,255,255,0.85); font-weight: 600; margin-top: 3px; }
+.manual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.manual-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.manual-card h3 { font-family: 'Fredoka One', cursive; font-size: 1rem; color: #2D7A32; margin-bottom: 7px; }
+.manual-card p, .manual-card li { font-size: 0.8rem; font-weight: 600; color: #555; line-height: 1.7; }
+.manual-card ul { padding-left: 14px; }
+.tip-chip { display: inline-block; background: #e8f5e9; border: 2px solid #c8e6c9; border-radius: 10px; padding: 3px 9px; font-size: 0.74rem; font-weight: 700; color: #2D7A32; margin: 3px 2px; }
+
+/* ========================================================
+   TOAST
+======================================================== */
+#toast {
+  position: fixed; bottom: 26px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #2D7A32; color: white; padding: 10px 24px;
+  border-radius: 50px; font-weight: 800; font-size: 0.88rem;
+  z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap; max-width: 92vw; text-align: center;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ========================================================
+   RESPONSIVE
+======================================================== */
+@media (max-width: 640px) {
+  .logo { font-size: 1.3rem; }
+  header { flex-direction: column; gap: 8px; }
+  .resource-bar { justify-content: center; }
+  .farm-wrapper { grid-template-columns: 1fr 8px 1fr 8px 1fr; padding: 10px; }
+  .path-col { display: none; } /* hide path cols on very small screens */
+  .home-hero h1 { font-size: 2rem; }
+  .dash-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .history-row { grid-template-columns: 2fr 1fr 1fr; }
+  .history-row span:nth-child(4),
+  .history-row span:nth-child(5) { display: none; }
+  .chart-7-wrap { height: 100px; }
+}
