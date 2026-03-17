@@ -222,7 +222,7 @@ No installation is required.
 Step 1 — Download or clone the repository
 
 
-git clone https://github.com/yourusername/farming-simulation-web-game.git
+git clone https://github.com/ShidoStack/farming-simulation-web-game.git
 
 
 Step 2 — Open the project folder
