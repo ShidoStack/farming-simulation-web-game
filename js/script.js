@@ -52,7 +52,7 @@ let state = {
   totalPlots:      10,
   expandCost:      80,
   plots:           [],
-  selectedCrop:    null,
+  selectedCrop:    null, 
   activeTool:      'plant',
   harvest:         {},
   marketPrices:    {},
